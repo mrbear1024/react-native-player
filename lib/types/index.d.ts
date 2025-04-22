@@ -41,3 +41,11 @@ export interface EpisodePlayerProps {
     compact?: boolean;
     style?: any;
 }
+
+/**
+ * 迷你播放器组件属性
+ */
+export interface MiniPlayerProps {
+    onOpenPlayer: () => void;
+    style?: any;
+}

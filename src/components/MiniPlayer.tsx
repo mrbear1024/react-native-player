@@ -2,11 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { usePlayer } from '../contexts/PlayerContext';
 import { Ionicons } from '@expo/vector-icons';
-
-interface MiniPlayerProps {
-  onOpenPlayer: () => void;  // 打开全屏播放器的回调
-  style?: any;
-}
+import { MiniPlayerProps } from '../types';
 
 /**
  * 底部迷你播放器组件

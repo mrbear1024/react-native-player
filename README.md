@@ -216,6 +216,169 @@ export default function PlayerScreen({ navigation }) {
 }
 ```
 
+## 快速入门教程
+
+本教程将帮助您快速上手 React Native Audio Player Kit，从基本安装到高级用法。
+
+### 1. 安装依赖
+
+首先，您需要安装必要的依赖：
+
+```bash
+# 使用 npm
+npm install react-native-audio-player-kit expo-av
+
+# 使用 yarn
+yarn add react-native-audio-player-kit expo-av
+```
+
+### 2. 基本集成
+
+最简单的使用方式是将您的应用包装在 `AudioPlayerSystem` 组件中：
+
+```jsx
+import React from 'react';
+import { View, Text } from 'react-native';
+import { AudioPlayerSystem } from 'react-native-audio-player-kit';
+
+export default function App() {
+  return (
+    <AudioPlayerSystem>
+      {/* 您的应用内容 */}
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>您的应用内容</Text>
+      </View>
+    </AudioPlayerSystem>
+  );
+}
+```
+
+### 3. 播放音频
+
+使用 `usePlayer` hook 来控制音频播放：
+
+```jsx
+import React from 'react';
+import { TouchableOpacity, Text } from 'react-native';
+import { usePlayer } from 'react-native-audio-player-kit';
+
+export default function MyComponent() {
+  const { setCurrentEpisode } = usePlayer();
+  
+  const handlePlay = () => {
+    setCurrentEpisode({
+      id: '1',
+      title: '示例音频',
+      author: '示例作者',
+      coverImage: 'https://example.com/cover.jpg',
+      audioUrl: 'https://example.com/audio.mp3',
+    });
+  };
+  
+  return (
+    <TouchableOpacity onPress={handlePlay}>
+      <Text>播放音频</Text>
+    </TouchableOpacity>
+  );
+}
+```
+
+### 4. 播放列表管理
+
+您可以使用 `usePlayer` hook 来管理播放列表：
+
+```jsx
+import React from 'react';
+import { View, FlatList, Text, TouchableOpacity } from 'react-native';
+import { usePlayer } from 'react-native-audio-player-kit';
+
+export default function PlaylistScreen() {
+  const { playlist, setCurrentEpisode, currentEpisode } = usePlayer();
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity 
+      onPress={() => setCurrentEpisode(item)}
+      style={{
+        padding: 15,
+        backgroundColor: currentEpisode?.id === item.id ? '#e0e0e0' : '#fff',
+        marginBottom: 10,
+        borderRadius: 8,
+      }}
+    >
+      <Text style={{ fontWeight: 'bold' }}>{item.title}</Text>
+      <Text>{item.author}</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={{ flex: 1, padding: 20 }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 20 }}>
+        播放列表
+      </Text>
+      <FlatList
+        data={playlist}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+    </View>
+  );
+}
+```
+
+### 5. 自定义播放器样式
+
+您可以通过 `style` 属性自定义播放器的样式：
+
+```jsx
+<EpisodePlayer 
+  episode={episode}
+  onClose={() => navigation.goBack()}
+  style={{
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+  }}
+/>
+```
+
+### 6. 高级用法
+
+#### 使用紧凑模式
+
+您可以使用紧凑模式来显示更小的播放器：
+
+```jsx
+<EpisodePlayer 
+  episode={episode}
+  onClose={() => navigation.goBack()}
+  compact={true}
+/>
+```
+
+#### 手动控制播放进度
+
+您可以使用 `seekTo` 函数来手动控制播放进度：
+
+```jsx
+const { seekTo } = usePlayer();
+
+// 跳转到 30 秒处
+seekTo(30);
+```
+
+### 7. 常见问题
+
+#### 如何添加新的音频到播放列表？
+
+目前，播放列表管理功能正在开发中。您可以通过 `setCurrentEpisode` 来播放单个音频。
+
+#### 如何自定义播放器的主题颜色？
+
+您可以通过 `style` 属性来自定义播放器的样式。
+
+#### 如何监听播放状态变化？
+
+您可以使用 `usePlayer` hook 中的 `isPlaying` 状态来监听播放状态变化。
+
 ### MiniPlayer Component
 
 The MiniPlayer component is a compact audio player that appears at the bottom of the screen. It provides basic playback controls and information about the currently playing audio.
