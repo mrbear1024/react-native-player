@@ -31,11 +31,14 @@
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-native": ">=0.60.0",
-    "expo-av": ">=10.0.0"
+    "expo-av": ">=10.0.0",
+    "@expo/vector-icons": "*"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
     "@types/react-native": "^0.70.0",
-    "typescript": "^4.9.0"
+    "typescript": "^4.9.0",
+    "expo-av": "^13.0.0",
+    "@expo/vector-icons": "^13.0.0"
   }
 }

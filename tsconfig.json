@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2017",
     "module": "commonjs",
     "declaration": true,
     "outDir": "./lib",
@@ -9,9 +9,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es6", "dom"],
+    "lib": ["es2017", "dom"],
     "moduleResolution": "node"
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*", "example"]
+  "exclude": ["node_modules", "**/__tests__/*", "example", "lib"]
 } 

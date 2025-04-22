@@ -1,31 +1,31 @@
 # React Native Audio Player Kit
 
-一个功能完整的 React Native 音频播放器组件库，提供了现代化的 UI 和便捷的 API。
+A full-featured React Native audio player component library with modern UI and convenient APIs.
 
-## 特点
+## Features
 
-- 🎵 完整的音频播放系统，包括迷你播放器和全屏播放器
-- 📱 自适应布局，适用于各种屏幕尺寸
-- 🔄 支持播放列表管理
-- 🎨 多种播放器样式（完整模式和紧凑模式）
-- 🛠️ 易于集成到现有项目中
-- 📦 与 Expo 和纯 React Native 项目兼容
+- 🎵 Complete audio playback system with mini player and full-screen player
+- 📱 Responsive layout for all screen sizes
+- 🔄 Playlist management support
+- 🎨 Multiple player styles (full mode and compact mode)
+- 🛠️ Easy integration with existing projects
+- 📦 Compatible with both Expo and bare React Native projects
 
-## 安装
+## Installation
 
 ```bash
-# 使用 npm
+# Using npm
 npm install react-native-audio-player-kit expo-av
 
-# 使用 yarn
+# Using yarn
 yarn add react-native-audio-player-kit expo-av
 ```
 
-## 快速开始
+## Quick Start
 
-### 基本用法
+### Basic Usage
 
-最简单的用法是使用 `AudioPlayerSystem` 包装您的应用：
+The simplest way is to wrap your app with `AudioPlayerSystem`:
 
 ```jsx
 import React from 'react';
@@ -35,16 +35,16 @@ import { AudioPlayerSystem } from 'react-native-audio-player-kit';
 export default function App() {
   return (
     <AudioPlayerSystem>
-      {/* 您的应用内容 */}
+      {/* Your app content */}
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>您的应用内容</Text>
+        <Text>Your App Content</Text>
       </View>
     </AudioPlayerSystem>
   );
 }
 ```
 
-### 播放音频
+### Playing Audio
 
 ```jsx
 import React from 'react';
@@ -55,11 +55,10 @@ export default function MyComponent() {
   const { setCurrentEpisode } = usePlayer();
   
   const handlePlay = () => {
-    // 播放一个音频
     setCurrentEpisode({
       id: '1',
-      title: '示例音频',
-      author: '示例作者',
+      title: 'Sample Audio',
+      author: 'Sample Author',
       coverImage: 'https://example.com/cover.jpg',
       audioUrl: 'https://example.com/audio.mp3',
     });
@@ -67,13 +66,42 @@ export default function MyComponent() {
   
   return (
     <TouchableOpacity onPress={handlePlay}>
-      <Text>播放音频</Text>
+      <Text>Play Audio</Text>
     </TouchableOpacity>
   );
 }
 ```
 
-### 使用独立播放器
+### Using the Mini Player
+
+The mini player is automatically shown when audio is playing. Here's how to customize it:
+
+```jsx
+import React from 'react';
+import { View } from 'react-native';
+import { AudioPlayerSystem } from 'react-native-audio-player-kit';
+
+export default function App() {
+  const handleOpenPlayer = () => {
+    // Navigate to your full player screen
+    navigation.navigate('Player');
+  };
+
+  return (
+    <AudioPlayerSystem
+      miniPlayerBottom={83} // Distance from bottom (default: 83)
+      onNavigateToPlayer={handleOpenPlayer}
+    >
+      {/* Your app content */}
+      <View style={{ flex: 1 }}>
+        <Text>Your App Content</Text>
+      </View>
+    </AudioPlayerSystem>
+  );
+}
+```
+
+### Using the Full Player
 
 ```jsx
 import React from 'react';
@@ -83,8 +111,8 @@ import { EpisodePlayer, PlayerProvider } from 'react-native-audio-player-kit';
 export default function PlayerScreen() {
   const episode = {
     id: '1',
-    title: '示例音频',
-    author: '示例作者',
+    title: 'Sample Audio',
+    author: 'Sample Author',
     coverImage: 'https://example.com/cover.jpg',
     audioUrl: 'https://example.com/audio.mp3',
   };
@@ -94,7 +122,7 @@ export default function PlayerScreen() {
       <View style={{ flex: 1 }}>
         <EpisodePlayer 
           episode={episode}
-          onClose={() => console.log('播放器关闭')}
+          onClose={() => navigation.goBack()}
         />
       </View>
     </PlayerProvider>
@@ -102,79 +130,272 @@ export default function PlayerScreen() {
 }
 ```
 
-## 组件
+### Complete Example with Navigation
 
-### AudioPlayerSystem
+Here's a complete example using React Navigation:
 
-全功能音频播放系统，包含状态管理和迷你播放器。
+```jsx
+// App.js
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { AudioPlayerSystem } from 'react-native-audio-player-kit';
+import HomeScreen from './screens/HomeScreen';
+import PlayerScreen from './screens/PlayerScreen';
 
-**属性**
+const Stack = createStackNavigator();
 
-| 属性名 | 类型 | 描述 | 默认值 |
-|--------|------|---------|---------|
-| `onNavigateToPlayer` | `() => void` | 打开播放器页面的回调函数 | `() => {}` |
-| `miniPlayerBottom` | `number` | 迷你播放器距离底部的距离（像素） | `83` |
-| `initialEpisodes` | `Episode[]` | 初始播放列表 | `[]` |
+export default function App() {
+  return (
+    <AudioPlayerSystem>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen 
+            name="Player" 
+            component={PlayerScreen}
+            options={{ presentation: 'modal' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AudioPlayerSystem>
+  );
+}
 
-### EpisodePlayer
+// screens/HomeScreen.js
+import React from 'react';
+import { View, TouchableOpacity, Text } from 'react-native';
+import { usePlayer } from 'react-native-audio-player-kit';
 
-独立的音频播放器组件，可以完整模式或紧凑模式显示。
+export default function HomeScreen({ navigation }) {
+  const { setCurrentEpisode } = usePlayer();
 
-**属性**
+  const handlePlayAudio = () => {
+    setCurrentEpisode({
+      id: '1',
+      title: 'Sample Audio',
+      author: 'Sample Author',
+      coverImage: 'https://example.com/cover.jpg',
+      audioUrl: 'https://example.com/audio.mp3',
+    });
+  };
 
-| 属性名 | 类型 | 描述 | 默认值 |
-|--------|------|---------|---------|
-| `episode` | `Episode` | 要播放的音频项 | **必填** |
-| `onClose` | `() => void` | 关闭播放器的回调函数 | - |
-| `compact` | `boolean` | 是否使用紧凑模式 | `false` |
-| `style` | `ViewStyle` | 自定义样式 | `{}` |
+  return (
+    <View style={{ flex: 1, padding: 20 }}>
+      <TouchableOpacity 
+        onPress={handlePlayAudio}
+        style={{
+          padding: 15,
+          backgroundColor: '#007AFF',
+          borderRadius: 8,
+          alignItems: 'center',
+        }}
+      >
+        <Text style={{ color: 'white' }}>Play Audio</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
-### MiniPlayer
+// screens/PlayerScreen.js
+import React from 'react';
+import { View } from 'react-native';
+import { EpisodePlayer } from 'react-native-audio-player-kit';
 
-底部迷你播放器组件。
+export default function PlayerScreen({ navigation }) {
+  const { currentEpisode } = usePlayer();
 
-**属性**
+  return (
+    <View style={{ flex: 1 }}>
+      <EpisodePlayer
+        episode={currentEpisode}
+        onClose={() => navigation.goBack()}
+      />
+    </View>
+  );
+}
+```
 
-| 属性名 | 类型 | 描述 | 默认值 |
-|--------|------|---------|---------|
-| `onOpenPlayer` | `() => void` | 打开全屏播放器的回调函数 | **必填** |
-| `style` | `ViewStyle` | 自定义样式 | `{}` |
+### MiniPlayer Component
 
-### PlayerProvider
+The MiniPlayer component is a compact audio player that appears at the bottom of the screen. It provides basic playback controls and information about the currently playing audio.
 
-音频播放状态的提供者组件。
+#### Basic Usage
 
-**属性**
+```jsx
+import React from 'react';
+import { View } from 'react-native';
+import { MiniPlayer, usePlayer } from 'react-native-audio-player-kit';
 
-| 属性名 | 类型 | 描述 | 默认值 |
-|--------|------|---------|---------|
-| `initialEpisodes` | `Episode[]` | 初始播放列表 | `[]` |
+export default function App() {
+  const { currentEpisode } = usePlayer();
+  
+  const handleOpenPlayer = () => {
+    // Navigate to full player screen
+    navigation.navigate('Player');
+  };
 
-## Hooks
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Your app content */}
+      <MiniPlayer onOpenPlayer={handleOpenPlayer} />
+    </View>
+  );
+}
+```
 
-### usePlayer
+#### Customization
 
-访问和控制播放状态的钩子。
+The MiniPlayer component can be customized with additional styles:
+
+```jsx
+<MiniPlayer 
+  onOpenPlayer={handleOpenPlayer}
+  style={{
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginBottom: 16,
+  }}
+/>
+```
+
+#### Features
+
+- 🎵 Displays current episode information (title, author, cover image)
+- ⏯️ Basic playback controls (play/pause, previous, next)
+- 📊 Progress bar showing playback progress
+- 🎨 Customizable appearance through style prop
+- 👆 Touch interaction to open full player
+
+#### Props
+
+| Prop | Type | Description | Default |
+|------|------|-------------|---------|
+| `onOpenPlayer` | `() => void` | Callback when mini player is pressed | Required |
+| `style` | `ViewStyle` | Custom styles for the container | `{}` |
+
+#### Styling
+
+The MiniPlayer component uses the following default styles:
+
+```jsx
+const styles = StyleSheet.create({
+  container: {
+    height: 64,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  cover: {
+    width: 48,
+    height: 48,
+    borderRadius: 4,
+    marginRight: 12,
+  },
+  info: {
+    flex: 1,
+    marginRight: 12,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  author: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
+  },
+  progressBar: {
+    height: 2,
+    backgroundColor: '#eee',
+    marginTop: 4,
+    borderRadius: 1,
+    overflow: 'hidden',
+  },
+  progress: {
+    height: '100%',
+    backgroundColor: '#2B95D6',
+  },
+  controls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  playButton: {
+    marginHorizontal: 8,
+  },
+});
+```
+
+## API Reference
+
+### AudioPlayerSystem Props
+
+| Prop | Type | Description | Default |
+|------|------|-------------|---------|
+| `onNavigateToPlayer` | `() => void` | Callback when opening full player | `() => {}` |
+| `miniPlayerBottom` | `number` | Distance from bottom (pixels) | `83` |
+| `initialEpisodes` | `Episode[]` | Initial playlist | `[]` |
+
+### EpisodePlayer Props
+
+| Prop | Type | Description | Default |
+|------|------|-------------|---------|
+| `episode` | `Episode` | Audio episode to play | Required |
+| `onClose` | `() => void` | Close player callback | Required |
+| `compact` | `boolean` | Use compact mode | `false` |
+| `style` | `ViewStyle` | Custom styles | `{}` |
+
+### MiniPlayer Props
+
+| Prop | Type | Description | Default |
+|------|------|-------------|---------|
+| `onOpenPlayer` | `() => void` | Open full player callback | Required |
+| `style` | `ViewStyle` | Custom styles | `{}` |
+
+### usePlayer Hook
 
 ```jsx
 const { 
-  currentEpisode,   // 当前播放的音频
-  isPlaying,        // 是否正在播放
-  playlist,         // 播放列表
-  progress,         // 当前播放进度（秒）
-  duration,         // 总时长（秒）
-  setCurrentEpisode, // 设置当前播放音频
-  togglePlayPause,  // 切换播放/暂停
-  playNextEpisode,  // 播放下一项
-  playPreviousEpisode, // 播放上一项
-  seekTo,           // 跳转到指定位置
+  currentEpisode,   // Current playing episode
+  isPlaying,        // Playing status
+  playlist,         // Playlist array
+  progress,         // Current playback progress (seconds)
+  duration,         // Total duration (seconds)
+  setCurrentEpisode, // Set current episode
+  togglePlayPause,  // Toggle play/pause
+  playNextEpisode,  // Play next episode
+  playPreviousEpisode, // Play previous episode
+  seekTo,           // Seek to position
 } = usePlayer();
 ```
 
-## 例子
+### Episode Type
 
-查看 `example` 目录中的示例应用，了解更多用法。
+```typescript
+interface Episode {
+  id: string;
+  title: string;
+  author: string;
+  coverImage: string;
+  audioUrl: string;
+}
+```
 
-## 许可证
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
 
 MIT 
